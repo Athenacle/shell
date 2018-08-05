@@ -3,4 +3,4 @@
 	url = https://github.com/Bash-it/bash-it.git
 [submodule "zsh"]
 	path = zsh
-	url = git@github.com:Athenacle/oh-my-zsh.git
+	url = https://github.com/Athenacle/oh-my-zsh.git
