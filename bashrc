@@ -16,9 +16,4 @@ fi
 
 
 export SHELL_DIR="/home/wangxiao/.shell"
-export WSCRIPTS_DIR="$SHELL_DIR"/wxc_scripts
-
-source "$SHELL_DIR"/bash-it.sh
-source "$WSCRIPTS_DIR"/bash-init.bash
-
-# Put your fun stuff here.
+export BASH_DIR="#SHELL_DIR"/bash
