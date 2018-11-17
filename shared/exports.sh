@@ -19,6 +19,7 @@ export ANDROID_HOME="/home/wangxiao/Android/Sdk/"
 export GOROOT_BOOTSTRAP="/usr/lib/go"
 export ANDROID_ROM_HOME="${ANDROID_HOME}/../Rom"
 alias repo="python2 ${ANDROID_ROM_HOME}/repo"
+
 alias vim="nvim"
 
 export TERM="xterm-256color"

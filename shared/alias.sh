@@ -23,9 +23,20 @@ alias la="ls -aF --color"
 alias xp='xprop | grep "WM_WINDOW_ROLE\|WM_CLASS" && echo "WM_CLASS(STRING) = \"NAME\", \"CLASS\""'
 alias formatall="find . -name \"*.[hc]\" | xargs clang-format-wxc -i"
 alias diff="diff --color"
-alias cat="bat"
-alias grep="ack"
-alias ack="ack --ignore-dir=.git"
+
+if [ $(command -v bat) -eq 0 ]; then
+
+    alias cat="bat"
+fi
+
+if [ $(command -v ack) -eq 0 ];then
+    alias grep="ack"
+    alias ack="ack --ignore-dir=.git"
+fi
+
+if [ $(command -v nvim) -eq 0 ]; then
+    alias vim="nvim"
+fi
 
 alias sc-poweroff="sudo systemctl poweroff"
 
