@@ -9,7 +9,7 @@ nm_print_demangling(){
     if [[ $# -ne 1 ]]; then
         echo "usage nm_print_demangline [ELF|.so|.o]"
     else
-        nm "$1" | awk '{print $3}' | c++filt | grep -i '^[a-z_0-9]' --color=never
+        nm "$1" | awk '{print $3}' | c++filt | \grep -i '^[a-z_0-9]' --color=never | sort | uniq
     fi
 }
 
@@ -63,7 +63,8 @@ portage_pkg_cotents(){
         if [[ $1 == *"/"* ]]; then
             categroy=$(dirname $1)
         fi
-        local pkg_dir=$(find /var/db/pkg/$category -maxdepth 2  -type d -name "$parameter-*") 2>>/dev/null
+        local pkg_dir
+        "$pkg_dir"=$(find /var/db/pkg/"$categroy" -maxdepth 2  -type d -name "$parameter-*") 2>>/dev/null
         if [[ "$pkg_dir" != "" ]]; then
             local line=$(echo $pkg_dir | wc -l )
             if [[ $line -ne 1 ]]; then
@@ -73,20 +74,45 @@ portage_pkg_cotents(){
                 local cfile="$pkg_dir/CONTENTS"
                 local filel=$(wc -l $cfile | cut -d ' ' -f 1)
                 local tmp=$(mktemp)
-                cat >> $tmp << EOF
+                cat >> "$tmp" << EOF
 `echo "==================================$(echo  $pkg_dir | cut -d '/' -f 5,6)================================="`
 `gawk '{printf ("%s %s\n",$1, $2)}' $pkg_dir/CONTENTS`
 `echo "===================================$filel files============================================"`
 EOF
-                if [[ $file -lt 500 ]]; then
-                    less $tmp
-                else
-                    cat $tmp
-                fi
-                rm $tmp
+if [[ "$file" -lt 500 ]]; then
+    less "$tmp"
+else
+    cat "$tmp"
+fi
+rm "$tmp"
             fi
         else
             echo "pkg $1 not found."
         fi
     fi
+}
+
+take (){
+    if [ $# != 1 ]; then
+        echo "usage: take <dir>"
+        echo "mkdir of <dir> and cd into it."
+        exit -1
+    else
+        mkdir -p "$1" && cd "$1" || exit -1
+    fi
+    true
+}
+
+
+whatip(){
+    curl ipv4bot.whatismyipaddress.com
+    echo
+}
+
+docker_rm_dangling_images(){
+    docker rmi -f $(docker images -f "dangling=true" -q)
+}
+
+sc-reload-start (){
+    sudo systemctl daemon-reload && sudo systemctl start "$1"
 }

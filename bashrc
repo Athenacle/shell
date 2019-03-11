@@ -17,3 +17,7 @@ fi
 
 export SHELL_DIR="/home/wangxiao/.shell"
 export BASH_DIR="#SHELL_DIR"/bash
+export http_proxy=''
+export https_proxy=''
+export ftp_proxy=''
+export socks_proxy=''

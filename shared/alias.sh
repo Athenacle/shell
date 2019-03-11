@@ -24,17 +24,17 @@ alias xp='xprop | grep "WM_WINDOW_ROLE\|WM_CLASS" && echo "WM_CLASS(STRING) = \"
 alias formatall="find . -name \"*.[hc]\" | xargs clang-format-wxc -i"
 alias diff="diff --color"
 
-if [ $(command -v bat) -eq 0 ]; then
+if which bat > /dev/null; then
 
     alias cat="bat"
 fi
 
-if [ $(command -v ack) -eq 0 ];then
+if which ack > /dev/null;then
     alias grep="ack"
     alias ack="ack --ignore-dir=.git"
 fi
 
-if [ $(command -v nvim) -eq 0 ]; then
+if which nvim > /dev/null; then
     alias vim="nvim"
 fi
 

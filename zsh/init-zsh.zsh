@@ -2,8 +2,8 @@
 export ZSH_DIR=/home/wangxiao/.shell/zsh/
 
 autoload -U colors select-word-style
-colors                                                      # colours
-select-word-style bash # ctrl+w on words
+colors                                                                # colours
+select-word-style bash                                                # ctrl+w on words
 
 ##
 # Completion
@@ -14,22 +14,22 @@ zmodload -i zsh/complist
 setopt hash_list_all                                                         # hash everything before completion
 setopt completealiases                                                       # complete alisases
 setopt always_to_end                                                         # when completing from the middle of a word, move the cursor to the end of the word
-setopt complete_in_word                                                      # allow completion from within a word/phrase
-setopt correct                                                               # spelling correction for commands
+#setopt complete_in_word                                                      # allow completion from within a word/phrase
+#setopt correct                                                               # spelling correction for commands
 setopt list_ambiguous                                                        # complete as much of a completion until it gets ambiguous.
 
 zstyle ':completion::complete:*' use-cache on                                # completion caching, use rehash to clear
 zstyle ':completion:*' cache-path "$SHELL_DIR"/zshcache                      # cache path
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'                    # ignore case
-zstyle ':completion:*' menu select=3                                         # menu if nb items > 2
+zstyle ':completion:*' menu select=5                                         # menu if nb items > 2
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}                        # colorz !
 zstyle ':completion:*::::' completer _expand _complete _ignored _approximate # list of completers to use
 zstyle ':completion:*' accept-exact '*(N)'
 
 # sections completion !
-zstyle ':completion:*' verbose yes
-zstyle ':completion:*:descriptions' format $'\e[38;5;82m%d'
-zstyle ':completion:*:messages' format $'\e[00;34m%d'
+zstyle ':completion:*' verbose no
+zstyle ':completion:*:descriptions' format $'\e[01;31m%d'
+zstyle ':completion:*:messages' format $'\e[00;01m%d'
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*:manuals' separate-sections true
 
@@ -88,7 +88,8 @@ unsetopt hup                    # no hup signal at shell exit
 unsetopt ignore_eof             # do not exit on end-of-file
 unsetopt list_beep              # no bell on ambiguous completion
 unsetopt rm_star_silent         # ask for confirmation for `rm *' or `rm path/*'
-setxkbmap -option compose:ralt  # compose-key
+
+#setxkbmap -option compose:ralt  # compose-key
 TERM=xterm-256color             # Colorz!
 export GCC_COLORS=1				# Colorz in gcc!
 
@@ -103,7 +104,6 @@ source "$ZSH_DIR"/agnoster.zsh-theme
 ##
 cdlast() {
     cd -
-    echo last
     zle reset-prompt
 }
 
@@ -117,15 +117,12 @@ zle -N cdlast
 
 bindkey -e                                # emacs keybindings
 bindkey '^`'      cdhome
-bindkey '^Q'      cdlast
-bindkey '\e[1;5C' forward-word            # C-Right
-bindkey '\e[1;5D' backward-word           # C-Left
+bindkey '^q'      cdlast
 bindkey '\e[2~'   overwrite-mode          # Insert
 bindkey '\e[3~'   delete-char             # Del
 bindkey '\e[5~'   history-search-backward # PgUp
 bindkey '\e[6~'   history-search-forward  # PgDn
 bindkey "^V"      cdlast
-
 
 ##
 # Other files
@@ -169,18 +166,3 @@ __sudo-command-line() {
 zle -N __sudo-command-line
 bindkey "\es" __sudo-command-line
 
-# fuck
-if [[ ! -z $commands[thefuck] ]]; then
-    # Register alias
-    eval "$(thefuck --alias)"
-
-    __fuck-command-line() {
-        local FUCK="$(THEFUCK_REQUIRE_CONFIRMATION=0 thefuck $(fc -ln -1 | tail -n 1) 2> /dev/null)"
-        [[ -z $FUCK ]] && echo -n -e "\a" && return
-        BUFFER=$FUCK
-        zle end-of-line
-    }
-    zle -N __fuck-command-line
-    bindkey "\ef" __fuck-command-line
-
-fi
