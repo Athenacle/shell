@@ -116,3 +116,7 @@ docker_rm_dangling_images(){
 sc-reload-start (){
     sudo systemctl daemon-reload && sudo systemctl start "$1"
 }
+
+consul_deregister(){
+    CONSUL_HTTP_ADDR=https://$(echo "$1" | gawk -F'/' '{print $3}' | sed 's,443,8501,g' | sed 's,v3,consul,g') consul services deregister -id $(echo "$1" | awk -F'/' '{print $6}')
+}

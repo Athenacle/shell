@@ -14,10 +14,8 @@ if [[ $- != *i* ]] ; then
 	return
 fi
 
+export SHELL_DIR="$HOME/.shell"
+export BASH_DIR="$SHELL_DIR"/bash
+source "$BASH_DIR"/init-bash.bash
 
-export SHELL_DIR="/home/wangxiao/.shell"
-export BASH_DIR="#SHELL_DIR"/bash
-export http_proxy=''
-export https_proxy=''
-export ftp_proxy=''
-export socks_proxy=''
+export PS1="[\e[1m\[\e[32m\]\u\[\e[m\]\[\e[35m\]@\[\e[m\]\[\e[31m\]\h\[\e[m\] \[\e[34m\]\W\[\e[m\]]\e[m "
