@@ -47,49 +47,8 @@ mkdir_time(){
 
 
 portage_search_use(){
-    grep "^""$1" /usr/portage/profiles/use.desc
-    ack ":""$1"" -" /usr/portage/profiles/use.local.desc
-    true
-}
-
-portage_pkg_cotents(){
-    if [[ $# -ne 1 ]]; then
-        echo "portage_pkg_contents: Print contents of a pkg"
-        echo "Usage: portage_pkg_contents category/pkg-name"
-        echo "       portage_pkg_contents pkg-name"
-    else
-        local parameter=$1
-        local categroy=""
-        if [[ $1 == *"/"* ]]; then
-            categroy=$(dirname $1)
-        fi
-        local pkg_dir
-        "$pkg_dir"=$(find /var/db/pkg/"$categroy" -maxdepth 2  -type d -name "$parameter-*") 2>>/dev/null
-        if [[ "$pkg_dir" != "" ]]; then
-            local line=$(echo $pkg_dir | wc -l )
-            if [[ $line -ne 1 ]]; then
-                echo "Deplicate PKG $1. Found $line:"
-                echo "$pkg_dir"
-            else
-                local cfile="$pkg_dir/CONTENTS"
-                local filel=$(wc -l $cfile | cut -d ' ' -f 1)
-                local tmp=$(mktemp)
-                cat >> "$tmp" << EOF
-`echo "==================================$(echo  $pkg_dir | cut -d '/' -f 5,6)================================="`
-`gawk '{printf ("%s %s\n",$1, $2)}' $pkg_dir/CONTENTS`
-`echo "===================================$filel files============================================"`
-EOF
-if [[ "$file" -lt 500 ]]; then
-    less "$tmp"
-else
-    cat "$tmp"
-fi
-rm "$tmp"
-            fi
-        else
-            echo "pkg $1 not found."
-        fi
-    fi
+    grep "^$1" /usr/portage/profiles/use.desc
+    grep ":$1 -" /usr/portage/profiles/use.local.desc
 }
 
 take (){
@@ -103,7 +62,6 @@ take (){
     true
 }
 
-
 whatip(){
     curl ipv4bot.whatismyipaddress.com
     echo
@@ -113,6 +71,10 @@ docker_rm_dangling_images(){
     docker rmi -f $(docker images -f "dangling=true" -q)
 }
 
+docker_rm_exited_container(){
+    docker ps --filter=status=exited -q | xargs docker rm
+}
+
 sc-reload-start (){
     sudo systemctl daemon-reload && sudo systemctl start "$1"
 }
@@ -120,3 +82,35 @@ sc-reload-start (){
 consul_deregister(){
     CONSUL_HTTP_ADDR=https://$(echo "$1" | gawk -F'/' '{print $3}' | sed 's,443,8501,g' | sed 's,v3,consul,g') consul services deregister -id $(echo "$1" | awk -F'/' '{print $6}')
 }
+
+disassamble_function(){
+    if [ $# != 2 ]; then
+        echo "usage: disassamble_function <ELF file> <function>"
+        false
+    else
+        gdb -batch -ex "file $1" -ex "disassemble $2"
+    fi
+}
+
+anyview_upload(){
+    if [ $# != 2 ]; then
+        echo "useage: anyview_upload <TXT file> <IP>"
+        false
+    else
+        curl -vv -F "path=/" -F "files[]=@$1" http://"$2"/upload
+        curl "http://$2/list?path=%2F" | jq .
+    fi
+}
+
+weather(){
+    curl  -s -H 'accept-language: zh' wttr.in/Jinhua
+}
+
+sanitizer(){
+    echo -DCMAKE_CXX_FLAGS="'-fsanitize=$1'" -DCMAKE_C_FLAGS="'-fsanitize=$1'" -DCMAKE_EXE_LINKER_FLAGS="'-fsanitize=$1'" -DCMAKE_MODULE_LINKER_FLAGS="'-fsanitize=$1'"
+}
+
+spacex(){
+    curl --proxy "10.70.20.11:1081" -s https://api.spacexdata.com/v3/launches/latest | jq .
+}
+

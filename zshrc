@@ -4,7 +4,19 @@ if [[ $- != *i* ]] ; then
 	return
 fi
 
-export SHELL_DIR=/home/wangxiao/.shell
+pname(){
+    pid=$(ps -p ${1:-$$} -o ppid=;)
+    apid=$(echo $pid | tr -d '[:space:]')
+    ps -p ${apid} -o comm=;
+}
+
+#_parent_name=$(pname)
+
+if [[ $(pname) == "code" ]] ; then
+    bash ; exit 0
+fi
+
+export SHELL_DIR="$HOME"/.shell
 
 source $SHELL_DIR/zsh/init-zsh.zsh
 

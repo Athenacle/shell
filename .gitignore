@@ -1,3 +1,4 @@
 historyzshcache/
 history
 zshcache/
+shared/00_secrets.sh

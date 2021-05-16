@@ -14,7 +14,7 @@ zmodload -i zsh/complist
 setopt hash_list_all                                                         # hash everything before completion
 setopt completealiases                                                       # complete alisases
 setopt always_to_end                                                         # when completing from the middle of a word, move the cursor to the end of the word
-#setopt complete_in_word                                                      # allow completion from within a word/phrase
+setopt complete_in_word                                                      # allow completion from within a word/phrase
 #setopt correct                                                               # spelling correction for commands
 setopt list_ambiguous                                                        # complete as much of a completion until it gets ambiguous.
 
@@ -59,8 +59,8 @@ setopt pushd_to_home            # `pushd` = `pushd $HOME`
 # History
 ##
 HISTFILE="$SHELL_DIR/history"   #where to store zsh config
-HISTSIZE=8192                   # big history
-SAVEHIST=8192                	# big history
+HISTSIZE=81920                   # big history
+SAVEHIST=81920                	# big history
 setopt append_history           # append
 setopt hist_ignore_all_dups     # no duplicate
 unsetopt hist_ignore_space      # ignore space prefixed commands
@@ -112,10 +112,24 @@ cdhome() {
     zle reset-prompt
 }
 
+backward-kill-sentence(){
+    autoload -Uz select-word-style
+    select-word-style shell                                            
+    zle backward-kill-word
+
+    autoload -Uz select-word-style
+    select-word-style bash                                            
+}
+
+
 zle -N cdhome
 zle -N cdlast
+zle -N backward-kill-sentence
 
+# for keys, refer to https://www.zsh.org/mla/users/2014/msg00266.html
 bindkey -e                                # emacs keybindings
+bindkey -e '^[^W'    backward-kill-sentence    
+
 bindkey '^`'      cdhome
 bindkey '^q'      cdlast
 bindkey '\e[2~'   overwrite-mode          # Insert
@@ -134,6 +148,7 @@ bindkey "^V"      cdlast
 alias -s gz="tar xfz"
 alias -s bz2="tar xfj"
 alias -s xz="tar xfJ"
+alias -s zip="unzip"
 
 
 for i in $(ls "$SHELL_DIR"/shared 2>/dev/null); do
