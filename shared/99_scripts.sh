@@ -92,6 +92,15 @@ disassamble_function(){
     fi
 }
 
+neatreader_upload(){
+    if [ $# != 2 ]; then
+        echo "useage: neatreader_upload <TXT file> <IP>"
+        false
+    else
+        curl -X POST -F "path=/" -F "newfile=@$1" http://"$2"/upload
+    fi
+}
+
 anyview_upload(){
     if [ $# != 2 ]; then
         echo "useage: anyview_upload <TXT file> <IP>"
@@ -112,5 +121,9 @@ sanitizer(){
 
 spacex(){
     curl --proxy "10.70.20.11:1081" -s https://api.spacexdata.com/v3/launches/latest | jq .
+}
+
+unzip_gbk(){
+    unzip -O cp936 $@
 }
 

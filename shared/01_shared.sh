@@ -48,3 +48,4 @@ fi
 
 alias sc-poweroff="sudo systemctl poweroff"
 
+alias now_date="date '+%Y%m%d-%H.%M.%S'"
